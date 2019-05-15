@@ -456,9 +456,9 @@ class Yolact(nn.Module):
         """ Saves the model's weights using compression because the file sizes were getting too big. """
         torch.save(self.state_dict(), path)
     
-    def load_weights(self, path):
+    def load_weights(self, path, device=torch.device("cuda")):
         """ Loads weights from a compressed save file. """
-        state_dict = torch.load(path)
+        state_dict = torch.load(path, map_location=device)
 
         # For backward compatability, remove these (the new variable is called layers)
         keys = list(state_dict.keys())

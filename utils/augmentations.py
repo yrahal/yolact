@@ -599,10 +599,14 @@ class FastBaseTransform(object):
     Maintain this as necessary.
     """
 
-    def __init__(self, ):
+    def __init__(self, device=torch.device("cuda")):
+      if device == torch.device("cpu"):
+        self.mean = torch.Tensor(MEANS).float()[None, :, None, None]
+        self.std  = torch.Tensor( STD ).float()[None, :, None, None]
+      else:
         self.mean = torch.Tensor(MEANS).float().cuda()[None, :, None, None]
         self.std  = torch.Tensor( STD ).float().cuda()[None, :, None, None]
-        self.transform = cfg.backbone.transform
+      self.transform = cfg.backbone.transform
 
     def __call__(self, img):
         # img assumed to be a pytorch BGR image with channel order [n, h, w, c]

@@ -125,7 +125,7 @@ iou_thresholds = [x / 100 for x in range(50, 100, 5)]
 coco_cats = [] # Call prep_coco_cats to fill this
 coco_cats_inv = {}
 
-def prep_display(dets_out, img, gt, gt_masks, h, w, undo_transform=True, class_color=False):
+def prep_display(dets_out, img, gt, gt_masks, h, w, undo_transform=True, class_color=False, device=torch.device("cuda")):
     """
     Note: If undo_transform=False then im_h and im_w are allowed to be None.
     gt and gt_masks are also allowed to be none (until I reimplement that functionality).
@@ -139,7 +139,8 @@ def prep_display(dets_out, img, gt, gt_masks, h, w, undo_transform=True, class_c
     
     with timer.env('Postprocess'):
         t = postprocess(dets_out, w, h, visualize_lincomb=args.display_lincomb, crop_masks=args.crop, score_threshold=args.score_threshold)
-        torch.cuda.synchronize()
+        if device != torch.device("cpu"):
+          torch.cuda.synchronize()
 
     with timer.env('Copy'):
         if cfg.eval_mask_branch:
